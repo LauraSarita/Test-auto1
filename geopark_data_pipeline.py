@@ -341,21 +341,60 @@ def schedule_daily_run():
         schedule.run_pending()
         time.sleep(60)  # Check every minute
 
-# For Render deployment
 def web_server():
     """Simple web server for Render"""
     import http.server
     import socketserver
     
-    PORT = int(os.environ.get("PORT", 8080))
+    PORT = int(os.environ.get("PORT", 10000))
     
     class MyHandler(http.server.SimpleHTTPRequestHandler):
         def do_GET(self):
-            if self.path == '/':
+            if self.path == '/' or self.path == '':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                self.wfile.write(b"<html><body><h1>GeoPark Data Pipeline</h1><p>Status: Running</p></body></html>")
+                html_content = """
+                <html>
+                <head>
+                    <title>GeoPark Data Pipeline</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 40px;
+                            line-height: 1.6;
+                        }
+                        h1 {
+                            color: #2c3e50;
+                        }
+                        .status {
+                            padding: 10px;
+                            background-color: #e8f5e9;
+                            border-left: 5px solid #4caf50;
+                            margin-bottom: 20px;
+                        }
+                        .button {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            background-color: #4caf50;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 4px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>GeoPark Data Pipeline</h1>
+                    <div class="status">
+                        <p><strong>Status:</strong> Running</p>
+                    </div>
+                    <p>Esta aplicacion extrae datos de GeoPark desde Alpha Vantage API y los almacena en MongoDB Atlas.</p>
+                    <p>Para ejecutar el pipeline manualmente, haga clic en el siguiente boton:</p>
+                    <a href="/run" class="button">Ejecutar Pipeline</a>
+                </body>
+                </html>
+                """
+                self.wfile.write(html_content.encode('utf-8'))
             elif self.path == '/run':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
@@ -363,20 +402,188 @@ def web_server():
                 try:
                     result = run_pipeline()
                     if result:
-                        self.wfile.write(f"<html><body><h1>Pipeline executed successfully</h1><p>Report saved at: {result}</p></body></html>".encode())
+                        html_content = f"""
+                        <html>
+                        <head>
+                            <title>Pipeline Ejecutado</title>
+                            <style>
+                                body {{
+                                    font-family: Arial, sans-serif;
+                                    margin: 40px;
+                                    line-height: 1.6;
+                                }}
+                                h1 {{
+                                    color: #2c3e50;
+                                }}
+                                .success {{
+                                    padding: 10px;
+                                    background-color: #e8f5e9;
+                                    border-left: 5px solid #4caf50;
+                                    margin-bottom: 20px;
+                                }}
+                                .button {{
+                                    display: inline-block;
+                                    padding: 10px 20px;
+                                    background-color: #2196f3;
+                                    color: white;
+                                    text-decoration: none;
+                                    border-radius: 4px;
+                                }}
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Pipeline ejecutado correctamente</h1>
+                            <div class="success">
+                                <p>Reporte guardado en: {result}</p>
+                            </div>
+                            <p>Los datos han sido extraidos, transformados y almacenados en MongoDB Atlas.</p>
+                            <a href="/" class="button">Volver al inicio</a>
+                        </body>
+                        </html>
+                        """
+                        self.wfile.write(html_content.encode('utf-8'))
                     else:
-                        self.wfile.write(b"<html><body><h1>Pipeline execution failed</h1><p>Check logs for details</p></body></html>")
+                        html_content = """
+                        <html>
+                        <head>
+                            <title>Error en Pipeline</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    margin: 40px;
+                                    line-height: 1.6;
+                                }
+                                h1 {
+                                    color: #e53935;
+                                }
+                                .error {
+                                    padding: 10px;
+                                    background-color: #ffebee;
+                                    border-left: 5px solid #e53935;
+                                    margin-bottom: 20px;
+                                }
+                                .button {
+                                    display: inline-block;
+                                    padding: 10px 20px;
+                                    background-color: #2196f3;
+                                    color: white;
+                                    text-decoration: none;
+                                    border-radius: 4px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Error al ejecutar el pipeline</h1>
+                            <div class="error">
+                                <p>Consulte los logs para obtener mas detalles.</p>
+                            </div>
+                            <a href="/" class="button">Volver al inicio</a>
+                        </body>
+                        </html>
+                        """
+                        self.wfile.write(html_content.encode('utf-8'))
                 except Exception as e:
-                    self.wfile.write(f"<html><body><h1>Error executing pipeline</h1><p>Error: {str(e)}</p></body></html>".encode())
+                    html_content = f"""
+                    <html>
+                    <head>
+                        <title>Error en Pipeline</title>
+                        <style>
+                            body {{
+                                font-family: Arial, sans-serif;
+                                margin: 40px;
+                                line-height: 1.6;
+                            }}
+                            h1 {{
+                                color: #e53935;
+                            }}
+                            .error {{
+                                padding: 10px;
+                                background-color: #ffebee;
+                                border-left: 5px solid #e53935;
+                                margin-bottom: 20px;
+                            }}
+                            .button {{
+                                display: inline-block;
+                                padding: 10px 20px;
+                                background-color: #2196f3;
+                                color: white;
+                                text-decoration: none;
+                                border-radius: 4px;
+                            }}
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Error al ejecutar el pipeline</h1>
+                        <div class="error">
+                            <p>Error: {str(e)}</p>
+                        </div>
+                        <a href="/" class="button">Volver al inicio</a>
+                    </body>
+                    </html>
+                    """
+                    self.wfile.write(html_content.encode('utf-8'))
             else:
                 self.send_response(404)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                self.wfile.write(b"<html><body><h1>404 Not Found</h1></body></html>")
+                html_content = """
+                <html>
+                <head>
+                    <title>404 Not Found</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 40px;
+                            line-height: 1.6;
+                        }
+                        h1 {
+                            color: #e53935;
+                        }
+                        .error {
+                            padding: 10px;
+                            background-color: #ffebee;
+                            border-left: 5px solid #e53935;
+                            margin-bottom: 20px;
+                        }
+                        .button {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            background-color: #2196f3;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 4px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>404 - Pagina no encontrada</h1>
+                    <div class="error">
+                        <p>La pagina que esta buscando no existe.</p>
+                    </div>
+                    <a href="/" class="button">Volver al inicio</a>
+                </body>
+                </html>
+                """
+                self.wfile.write(html_content.encode('utf-8'))
     
-    with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
-        logger.info(f"Serving at port {PORT}")
+    logger.info(f"Starting web server on port {PORT}")
+    try:
+        # Ensure we bind to 0.0.0.0 to listen on all network interfaces
+        httpd = socketserver.TCPServer(("0.0.0.0", PORT), MyHandler)
+        logger.info(f"Server running at http://0.0.0.0:{PORT}")
         httpd.serve_forever()
+    except Exception as e:
+        logger.error(f"Error starting web server: {e}")
+        # Try alternate port if specified port fails
+        alt_port = 8080
+        logger.info(f"Trying alternate port {alt_port}")
+        try:
+            httpd = socketserver.TCPServer(("0.0.0.0", alt_port), MyHandler)
+            logger.info(f"Server running at http://0.0.0.0:{alt_port}")
+            httpd.serve_forever()
+        except Exception as e:
+            logger.error(f"Error starting web server on alternate port: {e}")
+            raise
 
 if __name__ == "__main__":
     # Check if running in Render

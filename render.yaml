@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: geopark-data-pipeline
+    name: test-auto1
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python geopark_data_pipeline.py
@@ -17,4 +17,6 @@ services:
       - key: ALPHA_VANTAGE_API_KEY
         value: BCCMWJX0WL7IQYVE
       - key: SCHEDULE_TIME
-        value: "18:00" 
+        value: "18:00"
+      - key: PORT
+        value: "10000" 
