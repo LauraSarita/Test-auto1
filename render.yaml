@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: geopark-data-pipeline
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python geopark_data_pipeline.py
+    plan: free
+    envVars:
+      - key: RENDER
+        value: true
+      - key: MONGODB_URI
+        value: mongodb+srv://lgallego:LauGalle3101@clusteria.at4taak.mongodb.net/market_data?retryWrites=true&w=majority&appName=ClusterIA
+      - key: MONGODB_DB
+        value: market_data
+      - key: MONGODB_COLLECTION
+        value: geopark_daily
+      - key: ALPHA_VANTAGE_API_KEY
+        value: BCCMWJX0WL7IQYVE
+      - key: SCHEDULE_TIME
+        value: "18:00" 

@@ -1,0 +1,19 @@
+{
+    "api": {
+        "alpha_vantage_key": "BCCMWJX0WL7IQYVE"
+    },
+    "mongodb": {
+        "connection_string": "mongodb+srv://lgallego:LauGalle3101@clusteria.at4taak.mongodb.net/market_data?retryWrites=true&w=majority&appName=ClusterIA",
+        "database": "market_data",
+        "collection": "geopark_daily"
+    },
+    "email": {
+        "sender": "your_real_email@gmail.com",
+        "password": "your_app_password",
+        "recipients": ["recipient1@example.com", "recipient2@example.com"],
+        "note": "Para Gmail, debes usar una contraseña de aplicación generada en la configuración de seguridad de Google"
+    },
+    "schedule": {
+        "time": "18:00"
+    }
+} 

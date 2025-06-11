@@ -1,0 +1,46 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Archivos de logs
+*.log
+logs/
+
+# Archivos de Excel generados
+*.xlsx
+*.xls
+
+# Archivos de entorno virtual
+venv/
+ENV/
+.env
+
+# Archivos temporales
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Archivos específicos de IDEs
+.idea/
+.vscode/
+*.swp
+*.swo 
