@@ -3,7 +3,7 @@ services:
     name: test-auto1
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python geopark_data_pipeline.py
+    startCommand: gunicorn geopark_data_pipeline:app
     plan: free
     envVars:
       - key: RENDER
